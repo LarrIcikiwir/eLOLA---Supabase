@@ -2,161 +2,93 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>eLOLA - Masuk / Daftar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>eLOLA – Masuk & Daftar</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,600&family=Instrument+Sans:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="container" style="max-width: 400px; margin-top: 60px;">
-    <div class="card">
-      <h2 style="color: var(--primary-dark); text-align: center; margin-bottom: 6px;">eLOLA</h2>
-      <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Bank Sampah Digital</p>
-      
-      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <button id="tab-login" type="button" class="btn btn-primary" style="flex: 1;">Masuk</button>
-        <button id="tab-register" type="button" class="btn btn-outline" style="flex: 1;">Daftar</button>
-      </div>
 
-      <!-- Form Login -->
-      <form id="form-login">
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="login-username" required placeholder="Masukkan username">
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-password" required placeholder="******">
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Masuk</button>
-      </form>
-
-      <!-- Form Register -->
-      <form id="form-register" style="display: none;">
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="reg-username" required placeholder="Contoh: budi01" autocomplete="off">
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="reg-password" required minlength="6" placeholder="Minimal 6 karakter">
-        </div>
-        <div class="form-group">
-          <label>Nomor RT</label>
-          <input type="text" id="reg-rt" required placeholder="Contoh: RT03 atau 03">
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Daftar Sekarang</button>
-      </form>
+<main class="kartu">
+  <section class="kiri">
+    <div class="logo">
+      <svg viewBox="0 0 42 42" aria-hidden="true">
+        <rect width="42" height="42" rx="11" fill="#58b45d"/>
+        <path d="M21 9c-6 5-8 10-8 14a8 8 0 0 0 16 0c0-4-2-9-8-14z" fill="#fff"/>
+        <path d="M21 14v17" stroke="#58b45d" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <div><b>eLOLA</b><small>Bank Sampah Digital</small></div>
     </div>
-  </div>
+    <div>
+      <h2>Buku tabungan sampah, <em>versi digital</em> untuk seluruh warga.</h2>
+      <p>Setiap setoran jadi poin yang tersimpan aman.</p>
+    </div>
+  </section>
 
-  <script type="module">
-    import { supabase } from "./js/supabase-config.js";
-    import { showToast } from "./js/utils.js";
+  <section class="kanan">
+    <div class="peran" role="group" aria-label="Jenis pengguna">
+      <button type="button" id="pWarga" class="aktif">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg>
+        <b>Warga</b><span>Setor sampah &amp; kumpulkan poin</span>
+      </button>
+      <button type="button" id="pPetugas">
+        <svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>
+        <b>Petugas / Admin</b><span>Verifikasi setoran &amp; pantau data</span>
+      </button>
+    </div>
 
-    const tabLogin = document.getElementById("tab-login");
-    const tabRegister = document.getElementById("tab-register");
-    const formLogin = document.getElementById("form-login");
-    const formRegister = document.getElementById("form-register");
+    <div class="tab" role="tablist">
+      <button type="button" id="tMasuk" class="aktif">Masuk</button>
+      <button type="button" id="tDaftar">Daftar Akun</button>
+    </div>
 
-    tabLogin.onclick = () => {
-      formLogin.style.display = "block";
-      formRegister.style.display = "none";
-      tabLogin.className = "btn btn-primary";
-      tabRegister.className = "btn btn-outline";
-    };
+    <!-- FORM MASUK -->
+    <form id="fMasuk" novalidate>
+      <label for="idMasuk" id="lblIdMasuk">Nama Lengkap</label>
+      <input id="idMasuk" type="text" autocomplete="username" placeholder="Masukkan nama akun">
+      <label for="sMasuk">Kata Sandi</label>
+      <div class="sandi">
+        <input id="sMasuk" type="password" autocomplete="current-password" placeholder="••••••••">
+        <button type="button" class="lihat" data-t="sMasuk" aria-label="Tampilkan kata sandi">
+          <svg class="mata-tutup" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.1A10.6 10.6 0 0 1 12 6c6.5 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.6 6.7C3.9 8.5 2 12 2 12s3.5 6 10 6c1.6 0 3-.4 4.3-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+          <svg class="mata-buka" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <p class="pesan" id="pMasuk" role="alert"></p>
+      <button class="tombol" id="btnMasuk" type="submit">Masuk ke eLOLA →</button>
+    </form>
 
-    tabRegister.onclick = () => {
-      formLogin.style.display = "none";
-      formRegister.style.display = "block";
-      tabRegister.className = "btn btn-primary";
-      tabLogin.className = "btn btn-outline";
-    };
+    <!-- FORM DAFTAR -->
+    <form id="fDaftar" class="hidden" novalidate>
+      <label for="nama">Nama Lengkap</label>
+      <input id="nama" type="text" autocomplete="name" placeholder="Contoh: Budi Santoso">
+      
+      <label for="rt">Nomor RT</label>
+      <select id="rt">
+        <option value="">Pilih RT</option>
+        <option value="RT 01">RT 01</option>
+        <option value="RT 02">RT 02</option>
+        <option value="RT 03" selected>RT 03</option>
+        <option value="RT 04">RT 04</option>
+        <option value="RT 05">RT 05</option>
+      </select>
 
-    // Helper: format username menjadi email internal Supabase
-    const toInternalEmail = (u) => `${u.trim().toLowerCase()}@elola.local`;
+      <label for="sDaftar">Kata Sandi (minimal 6 karakter)</label>
+      <div class="sandi">
+        <input id="sDaftar" type="password" autocomplete="new-password" placeholder="••••••••">
+        <button type="button" class="lihat" data-t="sDaftar" aria-label="Tampilkan kata sandi">
+          <svg class="mata-tutup" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.1A10.6 10.6 0 0 1 12 6c6.5 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.6 6.7C3.9 8.5 2 12 2 12s3.5 6 10 6c1.6 0 3-.4 4.3-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+          <svg class="mata-buka" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <p class="pesan" id="pDaftar" role="alert"></p>
+      <button class="tombol" id="btnDaftar" type="submit">Buat akun eLOLA →</button>
+    </form>
 
-    // 1. Proses Login
-    formLogin.onsubmit = async (e) => {
-      e.preventDefault();
-      const rawUser = document.getElementById("login-username").value;
-      const password = document.getElementById("login-password").value;
-      const fakeEmail = toInternalEmail(rawUser);
+    <p class="bantuan" id="bantuan"></p>
+  </section>
+</main>
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: fakeEmail,
-        password: password
-      });
-
-      if (error) {
-        showToast("Login gagal: Username atau password salah.", "error");
-        return;
-      }
-
-      // Ambil peran user untuk redirect
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("peran")
-        .eq("id", data.user.id)
-        .single();
-
-      if (profile?.peran === "warga") window.location.href = "warga/setoran.html";
-      else if (profile?.peran === "petugas") window.location.href = "petugas/verifikasi.html";
-      else if (profile?.peran === "admin") window.location.href = "admin/dashboard.html";
-    };
-
-    // 2. Proses Daftar
-    formRegister.onsubmit = async (e) => {
-      e.preventDefault();
-      const rawUser = document.getElementById("reg-username").value.trim().toLowerCase();
-      const password = document.getElementById("reg-password").value;
-      let rt = document.getElementById("reg-rt").value.trim().toUpperCase();
-      if (!rt.startsWith("RT")) rt = "RT" + rt; // Standarisasi format RT
-
-      const fakeEmail = toInternalEmail(rawUser);
-
-      // Cek apakah username sudah dipakai
-      const { data: existingUser } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("username", rawUser)
-        .maybeSingle();
-
-      if (existingUser) {
-        showToast("Username sudah digunakan, pilih username lain.", "error");
-        return;
-      }
-
-      // Registrasi ke Auth
-      const { data, error: authErr } = await supabase.auth.signUp({
-        email: fakeEmail,
-        password: password
-      });
-
-      if (authErr) {
-        showToast("Gagal daftar: " + authErr.message, "error");
-        return;
-      }
-
-      // Simpan data profil warga
-      const { error: profErr } = await supabase.from("profiles").insert([{
-        id: data.user.id,
-        nama: rawUser,
-        username: rawUser,
-        peran: "warga",
-        kelurahan: "Lalolara",
-        rt: rt,
-        unit_bank_sampah: "Unit Kelurahan",
-        saldo_poin: 0,
-        total_kg: 0
-      }]);
-
-      if (profErr) {
-        showToast("Gagal menyimpan profil: " + profErr.message, "error");
-      } else {
-        showToast("Pendaftaran berhasil!");
-        window.location.href = "warga/setoran.html";
-      }
-    };
-  </script>
+<script type="module" src="js/auth.js"></script>
 </body>
 </html>
