@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>eLOLA - Masuk / Daftar</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="container" style="max-width: 420px; margin-top: 50px">
+      <div class="card">
+        <h2
+          style="
+            color: var(--primary-dark);
+            text-align: center;
+            margin-bottom: 6px;
+          "
+        >
+          eLOLA
+        </h2>
+        <p
+          style="
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+          "
+        >
+          Sistem Pengelolaan Bank Sampah
+        </p>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 16px">
+          <button id="tab-login" class="btn btn-primary" style="flex: 1">
+            Masuk
+          </button>
+          <button id="tab-register" class="btn btn-outline" style="flex: 1">
+            Daftar
+          </button>
+        </div>
+
+        <form id="form-login">
+          <div class="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              id="login-email"
+              required
+              placeholder="nama@email.com"
+            />
+          </div>
+          <div class="form-group">
+            <label>Kata Sandi</label>
+            <input
+              type="password"
+              id="login-password"
+              required
+              placeholder="******"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%">
+            Masuk
+          </button>
+        </form>
+
+        <form id="form-register" style="display: none">
+          <div class="form-group">
+            <label>Nama Lengkap</label>
+            <input
+              type="text"
+              id="reg-nama"
+              required
+              placeholder="Sesuai KTP"
+            />
+          </div>
+          <div class="form-group">
+            <label>NIK</label>
+            <input
+              type="text"
+              id="reg-nik"
+              required
+              placeholder="16 digit NIK"
+            />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              id="reg-email"
+              required
+              placeholder="nama@email.com"
+            />
+          </div>
+          <div class="form-group">
+            <label>Kata Sandi</label>
+            <input
+              type="password"
+              id="reg-password"
+              required
+              minlength="6"
+              placeholder="Minimal 6 karakter"
+            />
+          </div>
+          <div class="form-group">
+            <label>Kelurahan</label>
+            <input type="text" id="reg-kelurahan" value="Lalolara" required />
+          </div>
+          <div class="form-group">
+            <label>RT</label>
+            <input type="text" id="reg-rt" placeholder="RT03" required />
+          </div>
+          <div class="form-group">
+            <label
+              ><input type="checkbox" id="reg-is-asn" /> Saya adalah ASN</label
+            >
+          </div>
+          <div id="box-asn" class="form-group" style="display: none">
+            <label>NIP & Instansi</label>
+            <input
+              type="text"
+              id="reg-nip"
+              placeholder="Nomor Induk Pegawai"
+              style="margin-bottom: 6px"
+            />
+            <input
+              type="text"
+              id="reg-instansi"
+              placeholder="Contoh: Bappeda / DLH"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%">
+            Daftar Warga
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script type="module">
+      import { supabase } from "./js/supabase-config.js";
+      import { showToast } from "./js/utils.js";
+
+      const tabLogin = document.getElementById("tab-login");
+      const tabRegister = document.getElementById("tab-register");
+      const formLogin = document.getElementById("form-login");
+      const formRegister = document.getElementById("form-register");
+      const isAsnCheckbox = document.getElementById("reg-is-asn");
+      const boxAsn = document.getElementById("box-asn");
+
+      tabLogin.onclick = () => {
+        formLogin.style.display = "block";
+        formRegister.style.display = "none";
+        tabLogin.className = "btn btn-primary";
+        tabRegister.className = "btn btn-outline";
+      };
+      tabRegister.onclick = () => {
+        formLogin.style.display = "none";
+        formRegister.style.display = "block";
+        tabRegister.className = "btn btn-primary";
+        tabLogin.className = "btn btn-outline";
+      };
+      isAsnCheckbox.onchange = (e) => {
+        boxAsn.style.display = e.target.checked ? "block" : "none";
+      };
+
+      formLogin.onsubmit = async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          showToast(error.message, "error");
+          return;
+        }
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("peran")
+          .eq("id", data.user.id)
+          .single();
+        if (profile?.peran === "warga")
+          window.location.href = "warga/setoran.html";
+        else if (profile?.peran === "petugas")
+          window.location.href = "petugas/verifikasi.html";
+        else if (profile?.peran === "admin")
+          window.location.href = "admin/dashboard.html";
+      };
+
+      formRegister.onsubmit = async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("reg-email").value;
+        const password = document.getElementById("reg-password").value;
+        const nama = document.getElementById("reg-nama").value;
+        const nik = document.getElementById("reg-nik").value;
+        const kelurahan = document.getElementById("reg-kelurahan").value;
+        const rt = document.getElementById("reg-rt").value;
+        const is_asn = isAsnCheckbox.checked;
+        const nip = is_asn ? document.getElementById("reg-nip").value : null;
+        const instansi = is_asn
+          ? document.getElementById("reg-instansi").value
+          : null;
+
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+          showToast(error.message, "error");
+          return;
+        }
+
+        const { error: pErr } = await supabase.from("profiles").insert([
+          {
+            id: data.user.id,
+            nama,
+            nik,
+            peran: "warga",
+            is_asn,
+            nip,
+            instansi,
+            kelurahan,
+            rt,
+            unit_bank_sampah: is_asn ? "Balai Kota" : "Unit Kelurahan",
+          },
+        ]);
+
+        if (pErr) showToast(pErr.message, "error");
+        else {
+          showToast("Registrasi berhasil!");
+          window.location.href = "warga/setoran.html";
+        }
+      };
+    </script>
+  </body>
+</html>
