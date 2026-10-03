@@ -7,20 +7,20 @@ export async function checkAuth(allowedRoles = []) {
     return null;
   }
 
-  const { data: profile, error } = await supabase
+  const { data: profile } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user.id)
     .single();
 
-  if (error || !profile) {
+  if (!profile) {
     await supabase.auth.signOut();
     window.location.replace("/index.html");
     return null;
   }
 
   if (allowedRoles.length > 0 && !allowedRoles.includes(profile.peran)) {
-    alert("Akses ditolak: Peran Anda tidak diizinkan membuka halaman ini.");
+    alert("Akses dibatasi untuk peran Anda.");
     if (profile.peran === "warga") window.location.replace("/warga/setoran.html");
     else if (profile.peran === "petugas") window.location.replace("/petugas/verifikasi.html");
     else if (profile.peran === "admin") window.location.replace("/admin/dashboard.html");
