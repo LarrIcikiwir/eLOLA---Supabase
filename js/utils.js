@@ -4,8 +4,8 @@ export function formatRupiah(number) {
 
 export function formatTanggal(dateString) {
   if (!dateString) return "-";
-  return new Date(dateString).toLocaleDateString("id-ID", { 
-    day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" 
+  return new Date(dateString).toLocaleDateString("id-ID", {
+    day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
   });
 }
 
@@ -18,8 +18,8 @@ export function showToast(message, type = "success") {
     document.body.appendChild(container);
   }
   const toast = document.createElement("div");
-  toast.className = `toast ${type === "error" ? "toast-error" : ""}`;
   toast.innerText = message;
+  toast.style.cssText = `background: ${type === "error" ? "#b3261e" : "#284d32"}; color: #fff; padding: 10px 16px; border-radius: 8px; margin-top: 8px; font-size: 0.88rem; box-shadow: 0 4px 10px rgba(0,0,0,0.15);`;
   container.appendChild(toast);
   setTimeout(() => toast.remove(), 3500);
 }
